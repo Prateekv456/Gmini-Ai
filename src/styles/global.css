@@ -1,0 +1,185 @@
+/* Global Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
+
+/* App Container */
+.app {
+  display: flex;
+  height: 100vh;
+  width: 100%;
+  background: #f8f9fa;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 250px;
+  background: #f1f1f1;
+  padding: 20px;
+  height: 100vh;
+}
+
+/* Chat Container */
+.chat-container {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+/* Chat Box */
+.chat-box {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background: #f8f9fa;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Messages Section */
+.messages {
+  flex-grow: 1;
+  overflow-y: auto;
+  padding-bottom: 70px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Individual Messages */
+.message {
+  padding: 10px 15px;
+  border-radius: 8px;
+  max-width: 75%;
+  margin: 5px;
+  word-wrap: break-word;
+}
+
+/* User Message */
+.message.user {
+  background: #0084ff;
+  color: white;
+  align-self: flex-end;
+}
+
+/* Bot Message */
+.message.bot {
+  background: #e6e6e6;
+  color: black;
+  align-self: flex-start;
+}
+
+.messagetyping {
+  font-size: 12px;
+}
+
+/* Input Box */
+.input-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 70%;
+  position: relative; /* Keep it inside .chat-container */
+  margin: 0 auto; /* Center it horizontally */
+  bottom: 20px; /* Adjust as needed */
+  background: white;
+  padding: 10px;
+  border-top: 1px solid #ccc;
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+}
+
+
+/* Input Field */
+.input-container textarea {
+  flex-grow: 1;
+  width: 80%;
+  min-height: 40px;
+  max-height: 100px;
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  resize: none;
+  overflow-y: auto;
+  font-size: 16px;
+}
+
+/* Send Button */
+.input-container button {
+  margin-left: 10px;
+  padding: 10px 15px;
+  border: none;
+  background: #27ae60;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.input-container button:hover {
+  background: #2ecc71;
+}
+
+/* Dark Mode */
+.dark-mode {
+  background: #1e1e1e;
+  color: white;
+}
+
+.dark-mode .chat-box {
+  background: #2b2b2b;
+}
+
+.dark-mode .message.bot {
+  background: #444;
+  color: white;
+}
+
+.dark-mode .message.user {
+  background: #0084ff;
+}
+
+.dark-mode .input-container {
+  background: #2b2b2b;
+  border-top: 1px solid #555;
+}
+
+.dark-mode .input-container textarea {
+  background: #3b3b3b;
+  color: white;
+  border: 1px solid #555;
+}
+
+/* Dark Mode Toggle */
+.dark-mode-toggle {
+  position: fixed; /* Keep it fixed on the screen */
+  top: 20px;
+  right: 20px;
+  z-index: 1000; /* Ensure it's above other elements */
+  background: #333;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.dark-mode-toggle:hover {
+  background: #555;
+}
+
+.sidebar {
+  background-color: #f0f0f0;
+  color: black;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.dark-sidebar {
+  background-color: #222;
+  color: white;
+}
+
