@@ -2,10 +2,9 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 
 const API_KEY = process.env.REACT_APP_GOOGLE_API_KEY;
 
-const genAI = new GoogleGenerativeAI(API_KEY); // Replace with your API key
-const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+const genAI = new GoogleGenerativeAI(API_KEY); 
+const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
 
-console.log("API Key:", API_KEY);
 
 export const getChatResponse = async (message) => {
   try {

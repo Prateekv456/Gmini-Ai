@@ -11,9 +11,11 @@
     "axios": "^1.7.9",
     "dotenv": "^16.4.7",
     "env-cmd": "^10.1.0",
+    "marked": "^15.0.7",
     "openai": "^4.85.4",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "react-markdown": "^10.0.0",
     "react-scripts": "5.0.1",
     "web-vitals": "^2.1.4"
   },

@@ -7,15 +7,27 @@ const ChatInterface = () => {
   const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
+  const [chats, setChats] = useState([]);
+  const [selectedChat, setSelectedChat] = useState(null);
   const inputRef = useRef(null);
   const messagesEndRef = useRef(null);
 
-  // Auto-scroll to the latest message
+  useEffect(() => {
+    const savedChats = JSON.parse(localStorage.getItem("chatHistory")) || [];
+    if (savedChats.length > 0) {
+      setChats(savedChats);
+      setMessages(savedChats[savedChats.length - 1]?.messages || []);
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("chatHistory", JSON.stringify(chats));
+  }, [chats]);
+
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  // Auto-resize textarea
   useEffect(() => {
     if (inputRef.current) {
       inputRef.current.style.height = "auto";
@@ -27,9 +39,9 @@ const ChatInterface = () => {
     if (!input.trim()) return;
 
     const userMessage = { text: input, sender: "user" };
-    setMessages((prev) => [...prev, userMessage]);
+    const updatedMessages = [...messages, userMessage];
+    setMessages(updatedMessages);
     setInput("");
-
     setIsTyping(true);
 
     const botReply = await getChatResponse(input);
@@ -40,33 +52,73 @@ const ChatInterface = () => {
       typedMessage += botReply[i];
 
       setMessages((prev) => {
-        const updatedMessages = [...prev];
-
-        if (updatedMessages.length > 0 && updatedMessages[updatedMessages.length - 1].sender === "bot") {
-          updatedMessages[updatedMessages.length - 1].text = typedMessage;
+        const updatedMsgs = [...prev];
+        if (updatedMsgs.length > 0 && updatedMsgs[updatedMsgs.length - 1].sender === "bot") {
+          updatedMsgs[updatedMsgs.length - 1].text = typedMessage;
         } else {
-          updatedMessages.push({ text: typedMessage, sender: "bot" });
+          updatedMsgs.push({ text: typedMessage, sender: "bot" });
         }
-
-        return updatedMessages;
+        return updatedMsgs;
       });
     }
 
     setIsTyping(false);
+
+    setChats((prevChats) => {
+      if (prevChats.length === 0) return [{ name: input.substring(0, 20) + "...", messages: updatedMessages.concat({ text: typedMessage, sender: "bot" }) }];
+      
+      const updatedChats = [...prevChats];
+      if (updatedChats[updatedChats.length - 1]?.messages.length === 0) {
+        updatedChats[updatedChats.length - 1].name = input.length > 20 ? input.substring(0, 20) + "..." : input;
+      }
+      updatedChats[updatedChats.length - 1].messages = updatedMessages.concat({ text: typedMessage, sender: "bot" });
+      return updatedChats;
+    });
   };
 
-  const handleKeyDown = (e) => {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault(); // Prevents new line in textarea
-      handleSend();
+  const handleNewChat = () => {
+    const newChat = { name: "New Chat", messages: [] };
+    setChats([...chats, newChat]);
+    setMessages([]);
+    setSelectedChat(chats.length); 
+  };
+
+  const handleSelectChat = (index) => {
+    setSelectedChat(index);
+    setMessages(chats[index]?.messages || []);
+  };
+
+  const handleEditChatName = (index, newName) => {
+    setChats((prevChats) => {
+      const updatedChats = [...prevChats];
+      updatedChats[index].name = newName;
+      return updatedChats;
+    });
+  };
+
+  const handleDeleteChat = (index) => {
+    setChats((prevChats) => {
+      if (!prevChats || prevChats.length === 0) return [];
+      return prevChats.filter((_, i) => i !== index);
+    });
+
+    if (selectedChat === index) {
+      setMessages([]);
+      setSelectedChat(null);
     }
   };
 
   return (
     <div className={`app ${darkMode ? "dark-mode" : ""}`}>
       {/* Sidebar */}
-      <Sidebar darkMode={darkMode} />
-
+      <Sidebar 
+        darkMode={darkMode} 
+        chats={chats} 
+        onNewChat={handleNewChat} 
+        onSelectChat={handleSelectChat} 
+        onEditChatName={handleEditChatName}
+        onDeleteChat={handleDeleteChat}
+      />
 
       {/* Dark Mode Toggle Button */}
       <button className="dark-mode-toggle" onClick={() => setDarkMode(!darkMode)}>
@@ -92,9 +144,9 @@ const ChatInterface = () => {
               ref={inputRef}
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              onKeyDown={handleKeyDown}
               placeholder="Type a message..."
               rows="1"
+              onKeyDown={(e) => e.key === "Enter" && !e.shiftKey && (e.preventDefault(), handleSend())} // Enter sends message
             />
             <button onClick={handleSend} disabled={!input.trim()}>
               Send
